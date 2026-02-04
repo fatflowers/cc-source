@@ -1,0 +1,33 @@
+ alpha
+),await K(),Mq(
+);let{main:K}=await Promise.resolve().then(() => (TZq(),VZq));Mq(
+,
+,built_in:
+,contains:[{begin:
+,end:
+,literal:
+,path:
+,relevance:2},A.C_LINE_COMMENT_MODE,A.C_BLOCK_COMMENT_MODE,A.APOS_STRING_MODE,A.QUOTE_STRING_MODE,{className:
+:if(!J)throw V(j1);x();break;case
+ajv
+ajv-formats
+assert
+async_hooks
+buffer
+child_process
+crypto
+events
+fs
+http
+https
+inspector
+module
+net
+os
+path
+process
+stream
+tty
+url
+util
+zlib

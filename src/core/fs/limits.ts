@@ -1,0 +1,3 @@
+export const DEFAULT_MAX_READ_BYTES = 262144;
+export const DEFAULT_MAX_LINES = 2000;
+export const DEFAULT_MAX_LINE_LENGTH = 2000;

@@ -1,0 +1,18 @@
+{
+  "name": "claude-cli-restored",
+  "private": true,
+  "type": "module",
+  "bin": {
+    "claude": "bin/claude.ts"
+  },
+  "scripts": {
+    "test:help": "node tests/smoke/cli-help.test.mjs",
+    "test:version": "node tests/smoke/cli-version.test.mjs"
+  },
+  "dependencies": {
+    "commander": "^11.1.0"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
