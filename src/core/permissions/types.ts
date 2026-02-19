@@ -17,6 +17,7 @@ export interface PermissionDecision {
     reason: string;
   };
   suggestions?: Array<{ type: string; rules: ToolRule[]; behavior: PermissionBehavior; destination: string }>;
+  blockedPath?: string;
 }
 
 export interface ToolRule {
@@ -28,5 +29,6 @@ export interface ToolPermissionContextState {
   mode: PermissionMode;
   allowRules: ToolRule[];
   denyRules: ToolRule[];
+  askRules?: ToolRule[];
   isBypassPermissionsModeAvailable?: boolean;
 }

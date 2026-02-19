@@ -3,6 +3,7 @@ import { ATTRIBUTION_INFO, STRUCTURED_OUTPUT_BETA } from "./constants.js";
 import { getModelBetas } from "./betas.js";
 import { buildMetadata } from "./metadata.js";
 import { getBaseSystemPrompt } from "./systemPrompt.js";
+import { buildSkillsSystemPrompt } from "../skills/prompt.js";
 import type { AnthropicClient, MessageParam, ModelRequestParams, SystemBlock } from "./types.js";
 
 function normalizeSystemBlocks(system?: string | string[] | SystemBlock[]): SystemBlock[] {
@@ -46,9 +47,12 @@ export async function callModel(client: AnthropicClient, params: ModelRequestPar
     hasAppendSystemPrompt: params.hasAppendSystemPrompt ?? false,
   });
 
+  const skillSystemPrompt = await maybeBuildSkillSystemPrompt(params, messages);
+
   const systemBlocks: SystemBlock[] = [
     attributionHeader ? { type: "text", text: attributionHeader } : null,
     { type: "text", text: baseSystemPrompt },
+    skillSystemPrompt ? { type: "text", text: skillSystemPrompt } : null,
     ...normalizeSystemBlocks(system),
   ].filter((block): block is SystemBlock => block !== null);
 
@@ -66,4 +70,29 @@ export async function callModel(client: AnthropicClient, params: ModelRequestPar
   request.metadata = params.metadata ?? buildMetadata();
 
   return client.beta.messages.create(request, { signal });
+}
+
+async function maybeBuildSkillSystemPrompt(params: ModelRequestParams, messages: MessageParam[]) {
+  const skillOptions = params.skills;
+  if (!skillOptions || skillOptions.enabled === false || !skillOptions.cwd) {
+    return undefined;
+  }
+
+  const requestText = skillOptions.userPrompt ?? firstUserMessageText(messages);
+  if (!requestText) return undefined;
+
+  try {
+    const result = await buildSkillsSystemPrompt({
+      cwd: skillOptions.cwd,
+      request: requestText,
+      disableSlashCommands: skillOptions.disableSlashCommands,
+      maxAgentsLevels: skillOptions.maxAgentsLevels,
+      includeReferencedFiles: skillOptions.includeReferencedFiles,
+      maxReferencedFiles: skillOptions.maxReferencedFiles,
+      maxReferencedBytesPerFile: skillOptions.maxReferencedBytesPerFile,
+    });
+    return result.text;
+  } catch {
+    return undefined;
+  }
 }

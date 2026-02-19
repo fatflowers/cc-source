@@ -9,6 +9,7 @@ export class ToolPermissionContext {
       mode: state?.mode ?? "default",
       allowRules: state?.allowRules ?? [],
       denyRules: state?.denyRules ?? [],
+      askRules: state?.askRules ?? [],
       isBypassPermissionsModeAvailable: state?.isBypassPermissionsModeAvailable,
     };
   }
@@ -21,9 +22,10 @@ export class ToolPermissionContext {
     this.state.mode = mode;
   }
 
-  updateRules({ allowRules, denyRules }: { allowRules?: ToolRule[]; denyRules?: ToolRule[] }) {
+  updateRules({ allowRules, denyRules, askRules }: { allowRules?: ToolRule[]; denyRules?: ToolRule[]; askRules?: ToolRule[] }) {
     if (allowRules) this.state.allowRules = allowRules;
     if (denyRules) this.state.denyRules = denyRules;
+    if (askRules) this.state.askRules = askRules;
   }
 
   decide(toolName: string, input?: Record<string, unknown>): PermissionDecision {
@@ -34,6 +36,11 @@ export class ToolPermissionContext {
     const deny = this.state.denyRules.find((rule) => ruleApplies(toolName, rule, input));
     if (deny) {
       return { behavior: "deny", decisionReason: { type: "rule", reason: "deny" } };
+    }
+
+    const ask = this.state.askRules?.find((rule) => ruleApplies(toolName, rule, input));
+    if (ask) {
+      return { behavior: "ask", decisionReason: { type: "rule", reason: "ask" } };
     }
 
     const allow = this.state.allowRules.find((rule) => ruleApplies(toolName, rule, input));

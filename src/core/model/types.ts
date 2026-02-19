@@ -80,6 +80,17 @@ export interface ModelMetadata {
   [key: string]: string;
 }
 
+export interface SkillPromptOptions {
+  enabled?: boolean;
+  cwd?: string;
+  userPrompt?: string;
+  disableSlashCommands?: boolean;
+  maxAgentsLevels?: number;
+  includeReferencedFiles?: boolean;
+  maxReferencedFiles?: number;
+  maxReferencedBytesPerFile?: number;
+}
+
 export interface ModelRequestParams {
   model: string;
   system?: string | string[] | SystemBlock[];
@@ -95,6 +106,7 @@ export interface ModelRequestParams {
   isNonInteractive?: boolean;
   hasAppendSystemPrompt?: boolean;
   provider?: "vertex" | "bedrock" | "default" | string;
+  skills?: SkillPromptOptions;
 }
 
 export interface AnthropicMessagesClient {
